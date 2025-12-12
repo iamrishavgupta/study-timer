@@ -92,17 +92,13 @@ function App() {
   }, [isRunning, isPomodoroMode, isBreak, pomodoroLoop]);
 
  
-  useEffect(() => {
-    const handleVisibilityChange = () => {
-      if (document.hidden && isRunning) {
-        setIsRunning(false);
-        clearInterval(intervalRef.current);
-      }
-    };
-    
-    document.addEventListener('visibilitychange', handleVisibilityChange);
-    return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
-  }, [isRunning]);
+  
+
+
+
+
+
+  
 
   const formatTime = (seconds) => {
     const hrs = Math.floor(seconds / 3600);
