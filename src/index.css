@@ -1,0 +1,17 @@
+/* src/index.css or src/App.css */
+@import "tailwindcss";
+
+/* Custom theme configuration using @theme directive */
+@theme {
+  /* You can add custom colors, fonts, spacing, etc. here */
+  --color-primary: #3b82f6;
+  --color-secondary: #8b5cf6;
+}
+
+/* Optional: Add custom utilities or components */
+@utility focus-ring {
+  outline: 2px solid theme(--color-primary);
+  outline-offset: 2px;
+}
+
+
