@@ -1,17 +1,411 @@
-/* src/index.css or src/App.css */
 @import "tailwindcss";
+@import "tw-animate-css";
 
-/* Custom theme configuration using @theme directive */
-@theme {
-  /* You can add custom colors, fonts, spacing, etc. here */
-  --color-primary: #3b82f6;
-  --color-secondary: #8b5cf6;
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  --radius: 0.65rem;
+
+  --background: oklch(0.99 0 0);
+  --foreground: oklch(0.18 0.01 260);
+
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.18 0.01 260);
+
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.18 0.01 260);
+
+  --primary: oklch(0.55 0.22 264);
+  --primary-foreground: oklch(0.98 0 0);
+
+  --secondary: oklch(0.96 0.01 260);
+  --secondary-foreground: oklch(0.21 0.01 260);
+
+  --muted: oklch(0.96 0.01 260);
+  --muted-foreground: oklch(0.55 0.02 260);
+
+  --accent: oklch(0.96 0.01 260);
+  --accent-foreground: oklch(0.21 0.01 260);
+
+  --destructive: oklch(0.58 0.24 27);
+  --destructive-foreground: oklch(0.98 0 0);
+
+  --success: oklch(0.65 0.18 150);
+  --success-foreground: oklch(0.98 0 0);
+
+  --border: oklch(0.92 0.01 260);
+  --input: oklch(0.92 0.01 260);
+  --ring: oklch(0.55 0.22 264);
+
+  --chart-1: oklch(0.55 0.22 264);
+  --chart-2: oklch(0.6 0.18 184);
+  --chart-3: oklch(0.7 0.19 70);
+  --chart-4: oklch(0.65 0.24 16);
+  --chart-5: oklch(0.6 0.2 300);
 }
 
-/* Optional: Add custom utilities or components */
-@utility focus-ring {
-  outline: 2px solid theme(--color-primary);
-  outline-offset: 2px;
+.dark {
+  --background: oklch(0.16 0.008 260);
+  --foreground: oklch(0.96 0.005 260);
+
+  --card: oklch(0.2 0.01 260);
+  --card-foreground: oklch(0.96 0.005 260);
+
+  --popover: oklch(0.2 0.01 260);
+  --popover-foreground: oklch(0.96 0.005 260);
+
+  --primary: oklch(0.62 0.2 264);
+  --primary-foreground: oklch(0.16 0.008 260);
+
+  --secondary: oklch(0.27 0.01 260);
+  --secondary-foreground: oklch(0.96 0.005 260);
+
+  --muted: oklch(0.27 0.01 260);
+  --muted-foreground: oklch(0.68 0.02 260);
+
+  --accent: oklch(0.3 0.015 260);
+  --accent-foreground: oklch(0.96 0.005 260);
+
+  --destructive: oklch(0.62 0.22 25);
+  --destructive-foreground: oklch(0.98 0 0);
+
+  --success: oklch(0.7 0.17 152);
+  --success-foreground: oklch(0.16 0.008 260);
+
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 14%);
+  --ring: oklch(0.62 0.2 264);
+
+  --chart-1: oklch(0.62 0.2 264);
+  --chart-2: oklch(0.7 0.16 184);
+  --chart-3: oklch(0.75 0.18 70);
+  --chart-4: oklch(0.68 0.22 16);
+  --chart-5: oklch(0.65 0.2 300);
 }
 
+@theme inline {
+  --font-sans: 'JetBrains Mono', ui-monospace, monospace;
+  --font-display: 'JetBrains Mono', ui-monospace, monospace;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
 
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+@layer base {
+  * {
+    border-color: var(--border);
+  }
+
+  html {
+    color-scheme: light dark;
+  }
+
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    margin: 0;
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    letter-spacing: -0.01em;
+  }
+}
+
+/* Tabular figures so the timer digits don't shift width */
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+/* ===========================================================
+   Chrome stopwatch app-icon tile
+   =========================================================== */
+
+.sw-device {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  border-radius: 23%;
+  background: radial-gradient(circle at 50% 32%, #3c3c3e 0%, #1d1d1f 55%, #090909 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.03),
+    0 1.5rem 2.5rem rgba(0, 0, 0, 0.55);
+}
+
+/* --- Knurled crown --- */
+.sw-crown {
+  position: absolute;
+  top: 13%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 12%;
+  height: 7%;
+  border-radius: 0.2rem 0.2rem 0.1rem 0.1rem;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      rgba(0, 0, 0, 0.22) 0,
+      rgba(0, 0, 0, 0.22) 1px,
+      transparent 1px,
+      transparent 3px
+    ),
+    linear-gradient(180deg, #f6f6f6, #c2c2c4 42%, #828286 60%, #cfcfd2 100%);
+  box-shadow:
+    inset 0 0.08rem 0.1rem rgba(255, 255, 255, 0.7),
+    inset 0 -0.08rem 0.12rem rgba(0, 0, 0, 0.45),
+    0 0.15rem 0.3rem rgba(0, 0, 0, 0.4);
+  z-index: 0;
+}
+
+/* small neck under the crown */
+.sw-crown::after {
+  content: '';
+  position: absolute;
+  bottom: -55%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 55%;
+  height: 60%;
+  background: linear-gradient(180deg, #d2d2d5, #8a8a8e);
+  border-radius: 0 0 0.1rem 0.1rem;
+}
+
+/* --- Silver side pushers --- */
+.sw-btn {
+  position: absolute;
+  width: 11%;
+  height: 5.5%;
+  padding: 0;
+  border: none;
+  border-radius: 1rem;
+  background: linear-gradient(180deg, #f4f4f4, #c4c4c6 32%, #7f7f83 56%, #b9b9bc 80%, #ebebed);
+  box-shadow:
+    inset 0 0.06rem 0.1rem rgba(255, 255, 255, 0.8),
+    inset 0 -0.06rem 0.12rem rgba(0, 0, 0, 0.45),
+    0 0.15rem 0.3rem rgba(0, 0, 0, 0.4);
+  cursor: pointer;
+  z-index: 0;
+  transition: transform 0.08s ease, filter 0.15s ease;
+}
+
+.sw-btn:hover {
+  filter: brightness(1.08);
+}
+
+.sw-btn:focus-visible {
+  outline: none;
+  box-shadow:
+    inset 0 0.06rem 0.1rem rgba(255, 255, 255, 0.8),
+    0 0 0 0.18rem var(--ring);
+}
+
+.sw-btn-left {
+  left: 28%;
+  top: 26%;
+  transform-origin: center;
+  transform: rotate(-42deg);
+}
+
+.sw-btn-left:active {
+  transform: rotate(-42deg) scale(0.92);
+}
+
+.sw-btn-right {
+  right: 28%;
+  top: 26%;
+  transform-origin: center;
+  transform: rotate(42deg);
+}
+
+.sw-btn-right:active {
+  transform: rotate(42deg) scale(0.92);
+}
+
+/* --- Chrome bezel ring --- */
+.sw-bezel {
+  position: absolute;
+  left: 50%;
+  top: 25%;
+  transform: translateX(-50%);
+  width: 68%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: conic-gradient(
+    from 90deg,
+    #d6d6d8,
+    #fbfbfb,
+    #8d8d90,
+    #fafafa,
+    #6f6f72,
+    #e8e8ea,
+    #9a9a9d,
+    #fcfcfc,
+    #858588,
+    #d6d6d8
+  );
+  box-shadow:
+    inset 0 0.25rem 0.45rem rgba(255, 255, 255, 0.75),
+    inset 0 -0.35rem 0.55rem rgba(0, 0, 0, 0.55),
+    0 0.4rem 0.9rem rgba(0, 0, 0, 0.5);
+  z-index: 1;
+}
+
+/* --- Black dial --- */
+.sw-dial {
+  position: absolute;
+  inset: 9%;
+  border-radius: 50%;
+  overflow: hidden;
+  background: radial-gradient(circle at 50% 36%, #16181b 0%, #060607 62%, #000 100%);
+  box-shadow:
+    inset 0 0.4rem 1rem rgba(0, 0, 0, 0.9),
+    inset 0 0 0 0.12rem rgba(255, 255, 255, 0.05);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sw-ticks {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+/* Glass reflection across the upper part of the dial */
+.sw-dial-glare {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 48%;
+  background: radial-gradient(
+    130% 100% at 50% -25%,
+    rgba(255, 255, 255, 0.14),
+    rgba(255, 255, 255, 0) 72%
+  );
+  pointer-events: none;
+  z-index: 2;
+}
+
+.sw-screen-wrap {
+  position: relative;
+  width: 58%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 3;
+}
+
+.sw-digits {
+  width: 100%;
+}
+
+.sw-dial.is-running {
+  animation: sw-dial-pulse 2s ease-in-out infinite;
+}
+
+@keyframes sw-dial-pulse {
+  0%,
+  100% {
+    box-shadow:
+      inset 0 0.4rem 1rem rgba(0, 0, 0, 0.9),
+      inset 0 0 0 0.12rem rgba(255, 255, 255, 0.05);
+  }
+  50% {
+    box-shadow:
+      inset 0 0.4rem 1rem rgba(0, 0, 0, 0.9),
+      inset 0 0 0 0.12rem rgba(63, 217, 239, 0.18);
+  }
+}
+
+/* --- Fullscreen focus LCD panel --- */
+.sw-fs-panel {
+  padding: clamp(2rem, 6vw, 4rem) clamp(2.5rem, 8vw, 5.5rem);
+  border-radius: 2rem;
+  background: radial-gradient(circle at 50% 32%, #15181c 0%, #06070a 65%, #000 100%);
+  box-shadow:
+    0 2.5rem 5rem rgba(0, 0, 0, 0.65),
+    0 0 4rem rgba(63, 217, 239, 0.18),
+    inset 0 0 0 1px rgba(63, 217, 239, 0.14),
+    inset 0 0.5rem 1.4rem rgba(0, 0, 0, 0.85);
+}
+
+.sw-fs-display {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: min(62vw, 40rem);
+}
+
+.sw-mega-glow {
+  width: 100%;
+  filter:
+    drop-shadow(0 0.35rem 0.7rem rgba(0, 0, 0, 0.55))
+    drop-shadow(0 0 2px rgba(63, 217, 239, 0.55));
+}
+
+/* Clean mirrored reflection beneath the digits */
+.sw-fs-reflect {
+  width: 100%;
+  margin-top: 0.35rem;
+  transform: scaleY(-1);
+  opacity: 0.22;
+  -webkit-mask: linear-gradient(to bottom, #000, transparent 68%);
+  mask: linear-gradient(to bottom, #000, transparent 68%);
+}
+
+/* ===========================================================
+   Brand font — used only for the header title/subtitle.
+   Font file: public/fonts/Redtown-Regular.otf
+   Falls back to the Alfa Slab One slab serif if it fails to load.
+   =========================================================== */
+@font-face {
+  font-family: 'Redtown';
+  src: url('/fonts/Redtown-Regular.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+.font-brand {
+  font-family: 'Redtown', 'Alfa Slab One', serif;
+  font-weight: 400;
+  letter-spacing: 0;
+}
