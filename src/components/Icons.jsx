@@ -168,3 +168,74 @@ export function RefreshLogo({ className }) {
     </svg>
   );
 }
+
+export function MonthLogo({ className }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" className={className} aria-hidden="true">
+      {/* binder rings */}
+      <rect x="7" y="1.6" width="1.8" height="3.4" rx="0.9" fill="#6d28d9" />
+      <rect x="15.2" y="1.6" width="1.8" height="3.4" rx="0.9" fill="#6d28d9" />
+      {/* body */}
+      <rect x="2.5" y="3.6" width="19" height="16.8" rx="2.4" fill="#f7f1ec" />
+      {/* header band */}
+      <path
+        d="M4.9 3.6 h14.2 a2.4 2.4 0 0 1 2.4 2.4 V7.6 H2.5 V6 A2.4 2.4 0 0 1 4.9 3.6 Z"
+        fill="#8b5cf6"
+      />
+      {/* outline */}
+      <rect
+        x="2.5"
+        y="3.6"
+        width="19"
+        height="16.8"
+        rx="2.4"
+        stroke="#6d28d9"
+        strokeWidth="1.2"
+      />
+      {/* day grid */}
+      <g fill="#8b5cf6">
+        <rect x="5.5" y="10.4" width="2.1" height="2.1" rx="0.5" />
+        <rect x="10.95" y="10.4" width="2.1" height="2.1" rx="0.5" />
+        <rect x="16.4" y="10.4" width="2.1" height="2.1" rx="0.5" />
+        <rect x="5.5" y="14.4" width="2.1" height="2.1" rx="0.5" />
+        <rect x="10.95" y="14.4" width="2.1" height="2.1" rx="0.5" />
+        <rect x="16.4" y="14.4" width="2.1" height="2.1" rx="0.5" />
+      </g>
+    </svg>
+  );
+}
+
+export function YearLogo({ className }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" className={className} aria-hidden="true">
+      {/* binder rings */}
+      <rect x="7" y="1.6" width="1.8" height="3.4" rx="0.9" fill="#b45309" />
+      <rect x="15.2" y="1.6" width="1.8" height="3.4" rx="0.9" fill="#b45309" />
+      {/* body */}
+      <rect x="2.5" y="3.6" width="19" height="16.8" rx="2.4" fill="#f7f1ec" />
+      {/* header band */}
+      <path
+        d="M4.9 3.6 h14.2 a2.4 2.4 0 0 1 2.4 2.4 V7.6 H2.5 V6 A2.4 2.4 0 0 1 4.9 3.6 Z"
+        fill="#f59e0b"
+      />
+      {/* outline */}
+      <rect
+        x="2.5"
+        y="3.6"
+        width="19"
+        height="16.8"
+        rx="2.4"
+        stroke="#b45309"
+        strokeWidth="1.2"
+      />
+      {/* star */}
+      <path
+        d="M12 9.7 L13.12 12.46 L16.09 12.67 L13.81 14.59 L14.53 17.48 L12 15.9 L9.47 17.48 L10.19 14.59 L7.91 12.67 L10.88 12.46 Z"
+        fill="#f5c518"
+        stroke="#d99e00"
+        strokeWidth="0.6"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}

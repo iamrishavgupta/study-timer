@@ -18,6 +18,7 @@ import {
   Loader2,
   Flame,
   Tag,
+  ChevronDown,
 } from 'lucide-react';
 
 import { db } from './firebase';
@@ -36,7 +37,8 @@ import {
   TrendingUpLogo,
   SparklesLogo,
   CalendarLogo,
-  RefreshLogo,
+  MonthLogo,
+  YearLogo,
 } from '@/components/Icons';
 import {
   formatDuration,
@@ -59,6 +61,8 @@ function App() {
   const [sessions, setSessions] = useState([]);
   const [todayTime, setTodayTime] = useState(0);
   const [weekTime, setWeekTime] = useState(0);
+  const [monthTime, setMonthTime] = useState(0);
+  const [yearTime, setYearTime] = useState(0);
   const [sessionName, setSessionName] = useState('');
   const [sessionSubject, setSessionSubject] = useState('');
   const [showNameInput, setShowNameInput] = useState(false);
@@ -84,7 +88,10 @@ function App() {
     setDataLoaded(false);
 
     (async () => {
-      const today = new Date().toDateString();
+      const now = new Date();
+      const today = now.toDateString();
+      const monthKey = `${now.getFullYear()}-${now.getMonth()}`;
+      const yearKey = `${now.getFullYear()}`;
       try {
         const snap = await getDoc(doc(db, 'users', user.uid));
         if (cancelled) return;
@@ -102,11 +109,16 @@ function App() {
           } else {
             setTodayTime(d.todayTime || 0);
           }
+
+          setMonthTime(d.lastMonth === monthKey ? d.monthTime || 0 : 0);
+          setYearTime(d.lastYear === yearKey ? d.yearTime || 0 : 0);
         } else {
           setTime(0);
           setSessions([]);
           setWeekTime(0);
           setTodayTime(0);
+          setMonthTime(0);
+          setYearTime(0);
           setPomodoroLoop(true);
           setDailyGoal(4 * 3600);
         }
@@ -124,11 +136,12 @@ function App() {
 
   // Always-current snapshot of state so saveData never reads stale values
   const stateRef = useRef({});
-  stateRef.current = { time, todayTime, weekTime, sessions, pomodoroLoop, dailyGoal };
+  stateRef.current = { time, todayTime, weekTime, monthTime, yearTime, sessions, pomodoroLoop, dailyGoal };
 
   const saveData = useCallback(async () => {
     if (!user || !dataLoaded) return;
     const s = stateRef.current;
+    const now = new Date();
     try {
       await setDoc(
         doc(db, 'users', user.uid),
@@ -136,10 +149,14 @@ function App() {
           totalTime: s.time,
           todayTime: s.todayTime,
           weekTime: s.weekTime,
+          monthTime: s.monthTime,
+          yearTime: s.yearTime,
           sessions: s.sessions,
           pomodoroLoop: s.pomodoroLoop,
           dailyGoal: s.dailyGoal,
-          lastDate: new Date().toDateString(),
+          lastDate: now.toDateString(),
+          lastMonth: `${now.getFullYear()}-${now.getMonth()}`,
+          lastYear: `${now.getFullYear()}`,
         },
         { merge: true }
       );
@@ -181,6 +198,8 @@ function App() {
         setTime((prev) => prev + 1);
         setTodayTime((prev) => prev + 1);
         setWeekTime((prev) => prev + 1);
+        setMonthTime((prev) => prev + 1);
+        setYearTime((prev) => prev + 1);
 
         if (isPomodoroMode) {
           setPomodoroTime((prev) => {
@@ -230,6 +249,18 @@ function App() {
   const handleResetWeek = () => {
     if (window.confirm("Are you sure you want to reset this week's stats?")) {
       setWeekTime(0);
+    }
+  };
+
+  const handleResetMonth = () => {
+    if (window.confirm("Are you sure you want to reset this month's stats?")) {
+      setMonthTime(0);
+    }
+  };
+
+  const handleResetYear = () => {
+    if (window.confirm("Are you sure you want to reset this year's stats?")) {
+      setYearTime(0);
     }
   };
 
@@ -423,20 +454,42 @@ function App() {
         </header>
 
         {/* Stats */}
-        <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <StatCard
-            icon={<CalendarLogo className="size-6" />}
-            label="Today"
-            value={formatTime(todayTime)}
-            accent="text-primary"
-            onReset={handleResetToday}
-          />
-          <StatCard
-            icon={<TrendingUpLogo className="size-6" />}
-            label="This Week"
-            value={formatDuration(weekTime)}
-            accent="text-chart-2"
-            onReset={handleResetWeek}
+        <div className="mb-6">
+          <PeriodStat
+            items={[
+              {
+                key: 'today',
+                label: 'Today',
+                icon: <CalendarLogo className="size-6" />,
+                value: formatTime(todayTime),
+                accent: 'text-primary',
+                onReset: handleResetToday,
+              },
+              {
+                key: 'week',
+                label: 'This Week',
+                icon: <TrendingUpLogo className="size-6" />,
+                value: formatDuration(weekTime),
+                accent: 'text-chart-2',
+                onReset: handleResetWeek,
+              },
+              {
+                key: 'month',
+                label: 'This Month',
+                icon: <MonthLogo className="size-6" />,
+                value: formatDuration(monthTime),
+                accent: 'text-chart-5',
+                onReset: handleResetMonth,
+              },
+              {
+                key: 'year',
+                label: 'This Year',
+                icon: <YearLogo className="size-6" />,
+                value: formatDuration(yearTime),
+                accent: 'text-chart-3',
+                onReset: handleResetYear,
+              },
+            ]}
           />
         </div>
 
@@ -753,28 +806,105 @@ function App() {
   );
 }
 
-function StatCard({ icon, label, value, accent, onReset }) {
+function PeriodStat({ items }) {
+  const [key, setKey] = useState(items[0].key);
+  const [open, setOpen] = useState(false);
+  const ref = useRef(null);
+  const current = items.find((i) => i.key === key) ?? items[0];
+
+  useEffect(() => {
+    if (!open) return;
+    const onClick = (e) => {
+      if (ref.current && !ref.current.contains(e.target)) setOpen(false);
+    };
+    const onKey = (e) => {
+      if (e.key === 'Escape') setOpen(false);
+    };
+    document.addEventListener('mousedown', onClick);
+    document.addEventListener('keydown', onKey);
+    return () => {
+      document.removeEventListener('mousedown', onClick);
+      document.removeEventListener('keydown', onKey);
+    };
+  }, [open]);
+
   return (
     <motion.div whileHover={{ y: -2 }}>
       <Card className="py-0">
         <CardContent className="flex items-center justify-between gap-4 py-5">
-          <div className="flex items-center gap-3">
-            <div className={`flex size-10 items-center justify-center rounded-lg bg-muted ${accent}`}>
-              {icon}
+          <div className="flex min-w-0 items-center gap-3">
+            <div
+              className={`flex size-11 shrink-0 items-center justify-center rounded-lg bg-muted ${current.accent}`}
+            >
+              {current.icon}
             </div>
-            <div>
-              <p className="text-sm text-muted-foreground">{label}</p>
-              <p className="font-mono text-2xl font-bold tabular-nums">{value}</p>
+            <div className="min-w-0" ref={ref}>
+              <div className="relative">
+                <button
+                  type="button"
+                  onClick={() => setOpen((o) => !o)}
+                  className="-ml-1 flex items-center gap-1 rounded-md px-1 py-0.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
+                  aria-haspopup="listbox"
+                  aria-expanded={open}
+                >
+                  {current.label}
+                  <ChevronDown
+                    className={`size-3.5 transition-transform duration-200 ${open ? 'rotate-180' : ''}`}
+                  />
+                </button>
+
+                <AnimatePresence>
+                  {open && (
+                    <motion.ul
+                      initial={{ opacity: 0, y: -6, scale: 0.97 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: -6, scale: 0.97 }}
+                      transition={{ duration: 0.15 }}
+                      role="listbox"
+                      className="absolute left-0 top-full z-20 mt-2 w-48 overflow-hidden rounded-xl border bg-popover p-1 shadow-xl"
+                    >
+                      {items.map((i) => (
+                        <li key={i.key}>
+                          <button
+                            type="button"
+                            role="option"
+                            aria-selected={i.key === key}
+                            onClick={() => {
+                              setKey(i.key);
+                              setOpen(false);
+                            }}
+                            className={`flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm transition-colors ${
+                              i.key === key
+                                ? 'bg-accent text-foreground'
+                                : 'text-muted-foreground hover:bg-accent hover:text-foreground'
+                            }`}
+                          >
+                            <span className="flex size-6 shrink-0 items-center justify-center">
+                              {i.icon}
+                            </span>
+                            <span className="flex-1 text-left font-medium">{i.label}</span>
+                            {i.key === key && <Check className="size-4 text-primary" />}
+                          </button>
+                        </li>
+                      ))}
+                    </motion.ul>
+                  )}
+                </AnimatePresence>
+              </div>
+
+              <p className="truncate font-mono text-2xl font-bold tabular-nums">
+                {current.value}
+              </p>
             </div>
           </div>
           <Button
             variant="ghost"
             size="icon"
-            onClick={onReset}
-            className="text-muted-foreground hover:text-foreground"
-            title={`Reset ${label}`}
+            onClick={current.onReset}
+            className="shrink-0 rounded-lg text-muted-foreground hover:text-foreground"
+            title={`Reset ${current.label}`}
           >
-            <RefreshLogo className="size-5" />
+            <RotateCcw className="size-4" />
           </Button>
         </CardContent>
       </Card>
